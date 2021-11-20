@@ -1,7 +1,7 @@
 // Canvas Related 
 const canvas = document.createElement('canvas');
 const context = canvas.getContext('2d');
-const socket = io('http://localhost:3000'); 
+const socket = io(); 
 
 let isRefree = false;
 
@@ -173,22 +173,23 @@ function ballBoundaries() {
 // Called Every Frame
 function animate() {
   
-  if(isRefree) {
+  // if(isRefree) {
     ballMove();
     ballBoundaries();
-  }
+  // }
   renderCanvas();
   window.requestAnimationFrame(animate);
 }
 
-// Start Game, Reset Everything
-function startGame() {
+// load Game, Reset Everything
+function loadGame() {
   createCanvas();
   renderIntro();
-  
-  paddleIndex = 0;
-  window.requestAnimationFrame(animate);
   socket.emit('ready');
+}
+function startGame() {
+  paddleIndex = isRefree ? 0 : 1;
+  window.requestAnimationFrame(animate);
   canvas.addEventListener('mousemove', (e) => {
     playerMoved = true;
     paddleX[paddleIndex] = e.offsetX;
@@ -208,7 +209,7 @@ function startGame() {
 }
 
 // On Load
-startGame();
+loadGame(); 
 
 
 
